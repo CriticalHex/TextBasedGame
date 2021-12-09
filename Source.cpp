@@ -67,7 +67,7 @@ int main() {
 	cout << "     `\"\"\") )\"\"\"`\n";
 	system("PAUSE>nul");
 	system("cls");
-	while (input != "q") {
+	while (input != "q" && health > 0) {
 		//PlaySoundA((LPCSTR)"boom.WAV", NULL, SND_FILENAME | SND_ASYNC);
 		//PlaySoundA((LPCSTR)"Waterphone.WAV", NULL, SND_FILENAME | SND_ASYNC);
 		topBar();
@@ -394,48 +394,37 @@ int main() {
 				system("cls");
 				break;
 			case 6:
-				if (haveIBeenHere[4] == 0) {
-					if (amIStillHere[4] == 0) {
-						cout << "You walk into the other portion of the living room.\n";
+				if (haveIBeenHere[5] == 0) {
+					if (amIStillHere[5] == 0) {
+						cout << "You walk into the large looking dining room.\n";
 						system("timeout /t 3 >nul");
-						cout << "Out of the darkness, an armchair appears in the far right corner of the room.\n";
+						cout << "As you pass through the arch, you see that the dining room\n";
 						system("timeout /t 3 >nul");
-						cout << "It looks relatively untouched in comparison to the couch.\n";
+						cout << "is in fact not that large, but is instead adjacent to the kitchen,\n";
 						system("timeout /t 3 >nul");
-						cout << "To your left is another hallway, somehow looking less inviting than the last one.\n";
+						cout << "seperated by a peninsula, and an island.\n";
 						system("timeout /t 3 >nul");
-						cout << "In front of you is an archway leading into a large looking dining room.\n";
-						amIStillHere[4] = 1;
+						cout << "In the center of the dining room, is a table that's been cracked in half,\n";
+						system("timeout /t 3 >nul");
+						cout << "and in the right corner, is a keyboard with all it's keys missing.\n";
+						amIStillHere[5] = 1;
 					}
 					else {
-						cout << "You walk into the other portion of the living room.\n";
-						cout << "Out of the darkness, an armchair appears in the far right corner of the room.\n";
-						cout << "It looks relatively untouched in comparison to the couch.\n";
-						cout << "To your left is another hallway, somehow looking less inviting than the last one.\n";
-						cout << "In front of you is an archway leading into a large looking dining room.\n";
+						cout << "You walk into the large looking dining room.\n";
+						cout << "As you pass through the arch, you see that the dining room\n";
+						cout << "is in fact not that large, but is instead adjacent to the kitchen,\n";
+						cout << "seperated by a peninsula, and an island.\n";
+						cout << "In the center of the dining room, is a table that's been cracked in half,\n";
+						cout << "and in the right corner, is a keyboard with all it's keys missing.\n";
 
 					}
 				}
 				else {
-					if (amIStillHere[4] == 0) {
-						cout << "You walk into the second half of the living room.\n";
-						system("timeout /t 3 >nul");
-						cout << "An armchair is in the far right corner of the room.\n";
-						system("timeout /t 3 >nul");
-						cout << "It looks relatively untouched in comparison to the couch.\n";
-						system("timeout /t 3 >nul");
-						cout << "To your left is another hallway, and in front of you\n";
-						system("timeout /t 3 >nul");
-						cout << "is an archway leading into the dining room and kitchen.\n";
-						amIStillHere[4] = 1;
-					}
-					else {
-						cout << "You walk into the second half of the living room.\n";
-						cout << "An armchair is in the far right corner of the room.\n";
-						cout << "It looks relatively untouched in comparison to the couch.\n";
-						cout << "To your left is another hallway, and in front of you\n";
-						cout << "is an archway leading into the dining room and kitchen.\n";
-					}
+					cout << "You walk back into the dining room.\n";
+					cout << "Adjacent to you is the kitchen,\n";
+					cout << "seperated from the dining room by a peninsula, and an island.\n";
+					cout << "In the center of the dining room, is a table that's been cracked in half,\n";
+					cout << "and in the right corner, is a keyboard with all it's keys missing.\n";
 				}
 				getline(cin, input);
 				transform(input.begin(), input.end(), input.begin(), ::tolower);
@@ -446,23 +435,14 @@ int main() {
 				else if (input.compare("back") == 0 || input.compare("go back") == 0 || input.compare("walk back") == 0 || input.compare("living room") == 0 || input.compare("b") == 0) {
 					room = 4;
 				}
-				else if (input.compare("check armchair") == 0 || input.compare("examine armchair") == 0 || input.compare("armchair") == 0 || input.compare("c") == 0 || input.compare("inspect armchair") == 0 || input.compare("chair") == 0) {
+				else if (input.compare("check table") == 0 || input.compare("examine table") == 0 || input.compare("table") == 0 || input.compare("t") == 0 || input.compare("inspect table") == 0 || input.compare("dining table") == 0) {
 					system("cls");
 					topBar();
-					if (inventoryDisplay[LIGHTER] == 0) {
-						cout << "You walk over to the armchair, which is a dark red.\n";
-						system("timeout /t 3 >nul");
-						cout << "You check it carefully, looking under it,\n";
-						system("timeout /t 3 >nul");
-						cout << "and under the cusions. Under the cusions you find some lose change,\n";
-						system("timeout /t 3 >nul");
-						cout << "and a lighter with so little fluid in it, you'll only get seconds of flame.\n";
-						inventory[LIGHTER] = "Lighter";
-						inventoryDisplay[LIGHTER] = 1;
-					}
-					else {
-						cout << "You already checked out the chair, you had found a lighter with almost no fluid.\n";
-					}
+					cout << "You attempt to check out the table.\n";
+					PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
+					system("timeout /t 1 >nul");
+					cout << "Ouch! You got a splinter! Maybe don't do that again.\n";
+					health -= 1;
 					system("PAUSE>nul");
 				}
 				else if (input.compare("hallway") == 0 || input.compare("hall") == 0 || input.compare("enter the hall") == 0 || input.compare("h") == 0) {
@@ -597,6 +577,8 @@ void thingsInAllRooms(string input) {
 		cout << "YOU WIN!!\n";
 		system("timeout /t 2 >nul");
 		cout << "Just kidding. You wish though!\n";
+		health -= 20;
+		PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
 		system("timeout /t 2 >nul");
 	}
 	else if (input != "") {
