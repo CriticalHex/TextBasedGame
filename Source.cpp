@@ -75,7 +75,7 @@ int main() {
 			switch (room) {
 			default:
 				cout << "I seem to have messed up, you're not in a room.\n";
-			case 1:
+			case 1: //start
 				if (amIStillHere[0] == 0) {
 					cout << "You've arrived, before you sits a dilapidated town house.\n";
 					system("timeout /t 3 >nul");
@@ -103,7 +103,7 @@ int main() {
 				}
 				system("cls");
 				break;
-			case 2:
+			case 2: //foyer
 				if (haveIBeenHere[1] == 0) {
 					if (amIStillHere[1] == 0) {
 						cout << "You enter the house, and a cold wave washes over you.\n";
@@ -211,7 +211,7 @@ int main() {
 				}
 				system("cls");
 				break;
-			case 3:
+			case 3: //hallway
 				if (amIStillHere[2] == 0) {
 					cout << "You walk into the hallway. Around a left bend,\n";
 					system("timeout /t 3 >nul");
@@ -238,7 +238,7 @@ int main() {
 				}
 				system("cls");
 				break;
-			case 4:
+			case 4: //living room
 				if (amIStillHere[3] == 0) {
 					cout << "You're in the first half of the living room. It's dark,\n";
 					system("timeout /t 3 >nul");
@@ -313,7 +313,7 @@ int main() {
 				}
 				system("cls");
 				break;
-			case 5:
+			case 5: // living room 2
 				if (haveIBeenHere[4] == 0) {
 					if (amIStillHere[4] == 0) {
 						cout << "You walk into the other portion of the living room.\n";
@@ -393,7 +393,7 @@ int main() {
 				}
 				system("cls");
 				break;
-			case 6:
+			case 6: //dining room
 				if (haveIBeenHere[5] == 0) {
 					if (amIStillHere[5] == 0) {
 						cout << "You walk into the large looking dining room.\n";
@@ -428,12 +428,13 @@ int main() {
 				}
 				getline(cin, input);
 				transform(input.begin(), input.end(), input.begin(), ::tolower);
-				if (input.compare("dining room") == 0 || input.compare("diningroom") == 0 || input.compare("forward") == 0 || input.compare("walk forward") == 0 || input.compare("d") == 0 || input.compare("go forward") == 0) {
-					room = 6;
-					haveIBeenHere[4] = 1;
+				if (input.compare("kitchen") == 0 || input.compare("front") == 0 || input.compare("forward") == 0 || input.compare("walk forward") == 0 || input.compare("k") == 0 || input.compare("go forward") == 0) {
+					room = 7;
+					haveIBeenHere[5] = 1;
 				}
 				else if (input.compare("back") == 0 || input.compare("go back") == 0 || input.compare("walk back") == 0 || input.compare("living room") == 0 || input.compare("b") == 0) {
-					room = 4;
+					room = 5;
+					haveIBeenHere[5] = 1;
 				}
 				else if (input.compare("check table") == 0 || input.compare("examine table") == 0 || input.compare("table") == 0 || input.compare("t") == 0 || input.compare("inspect table") == 0 || input.compare("dining table") == 0) {
 					system("cls");
@@ -445,6 +446,73 @@ int main() {
 					health -= 1;
 					system("PAUSE>nul");
 				}
+				else {
+					thingsInAllRooms(input);
+				}
+				system("cls");
+				break;
+			case 7: //kitchen
+				if (haveIBeenHere[6] == 0) {
+					if (amIStillHere[6] == 0) {
+						cout << "You walk past the counter into the kitchen.\n";
+						system("timeout /t 3 >nul");
+						cout << "On the counter is a knife holder, and \n";
+						system("timeout /t 3 >nul");
+						cout << "towards the back of the room is a pantry.\n";
+						system("timeout /t 3 >nul");
+						cout << "Pots and pans hang on the wall.\n";
+						amIStillHere[6] = 1;
+					}
+					else {
+						cout << "You walk past the counter into the kitchen.\n";
+						cout << "On the counter is a knife holder, and \n";
+						cout << "towards the back of the room is a pantry.\n";
+						cout << "Pots and pans hang on the wall.\n";
+					}
+				}
+				else {
+					cout << "You walk back into the kitchen.\n";
+					cout << "On the counter is a knife holder, and \n";
+					cout << "towards the back of the room is a pantry.\n";
+					cout << "Pots and pans hang on the wall.\n";
+				}
+				getline(cin, input);
+				transform(input.begin(), input.end(), input.begin(), ::tolower);
+				if (input.compare("pantry") == 0 || input.compare("p") == 0 || input.compare("open pantry") == 0) {
+					system("cls");
+					topBar();
+					cout << "You open the pantry.\n";
+					system("timeout /t 3 >nul");
+					cout << "A horrid putrid stench assaults your nostrils.\n";
+					system("timeout /t 3 >nul");
+					cout << "The pantry is full of rotten food, that has\n";
+					system("timeout /t 3 >nul");
+					cout << "mostly decomposed. You slam the door shut.\n";
+					system("timeout /t 3 >nul");
+					cout << "Nothing you want in there.\n";
+					system("PAUSE>nul");
+				}
+				else if (input.compare("back") == 0 || input.compare("go back") == 0 || input.compare("walk back") == 0 || input.compare("dining room") == 0 || input.compare("b") == 0) {
+					room = 6;
+					haveIBeenHere[6] = 1;
+				}
+				else if (input.compare("check knives") == 0 || input.compare("examine knives") == 0 || input.compare("knives") == 0 || input.compare("k") == 0 || input.compare("inspect knives") == 0 || input.compare("knife holder") == 0) {
+					system("cls");
+					topBar();
+					if (inventoryDisplay[KITCHEN] == 0) {
+						cout << "You walk over to the knife holder.\n";
+						system("timeout /t 3 >nul");
+						cout << "You find a few knives,\n";
+						system("timeout /t 3 >nul");
+						cout << " and decide to take the bread knife.\n";
+						inventory[KITCHEN] = "Kitchen Knife";
+						inventoryDisplay[KITCHEN] = 1;
+					}
+					else {
+						cout << "You already checked out the knives, you had taken a bread knife.\n";
+					}
+					system("PAUSE>nul");
+				}
 				else if (input.compare("hallway") == 0 || input.compare("hall") == 0 || input.compare("enter the hall") == 0 || input.compare("h") == 0) {
 					room = 8;
 				}
@@ -453,16 +521,13 @@ int main() {
 				}
 				system("cls");
 				break;
-			case 7:
+			case 8: //hallway 2
 
 				break;
-			case 8:
-
-				break;
-			case 9:
+			case 9: //stairs
 				floor = 2;
 				break;
-			case 10:
+			case 10: 
 
 				break;
 			case 11:
