@@ -41,18 +41,21 @@ string inventory[10];
 10.Makeshift chest armor(increase likelyhood of a w)*/
 enum INVENTORY {MONEY, LIGHTER, WOOD, TOY, KITCHEN, POCKET, SPEAR, FLASHLIGHT, BATTERIES, CHESTPLATE};
 int health = 100;
+bool burning = 0;
+bool didIWin = 0;
 
 void thingsInAllRooms(string input);
-bool bossFight(string input);
+bool bossFight();
 int betterRand();
 void topBar();
 
 int main() {
 	srand(time(NULL));
+	int randomMoney = betterRand();
 	int burnTime;
-	bool burning = 0;
 	int floor = 1;
 	int room = 1;
+	
 	bool amIStillHere[26] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 	bool haveIBeenHere[26] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 	string input;
@@ -71,6 +74,14 @@ int main() {
 		//PlaySoundA((LPCSTR)"boom.WAV", NULL, SND_FILENAME | SND_ASYNC);
 		//PlaySoundA((LPCSTR)"Waterphone.WAV", NULL, SND_FILENAME | SND_ASYNC);
 		topBar();
+		if (burning == 1) {
+			if (burnTime > 0 && floor == 2 && input != "") {
+				burnTime -= 1;
+				cout << "Burn time remaining: " << burnTime << endl;
+			}
+			else 
+				floor = 1;
+		}
 		if (floor == 1) { //main floor
 			switch (room) {
 			default:
@@ -160,26 +171,25 @@ int main() {
 					system("cls");
 					topBar();
 					if (inventoryDisplay[MONEY] == 0) {
-						int random = betterRand();
 						cout << "You examine the coat, searching it's pockets. In one, you find";
 						//bill type
-						if (random > 95) {
+						if (randomMoney > 95) {
 							cout << " two 100 dollar bills.\n";
 							burnTime = 2;
 						}
-						else if (random > 85) {
+						else if (randomMoney > 85) {
 							cout << " four 50 dollar bills.\n";
 							burnTime = 4;
 						}
-						else if (random > 70) {
+						else if (randomMoney > 70) {
 							cout << " ten 10 dollar bills.\n";
 							burnTime = 10;
 						}
-						else if (random > 40) {
+						else if (randomMoney > 40) {
 							cout << " thirty 10 dollar bills.\n";
 							burnTime = 30;
 						}
-						else if (random > 0) {
+						else if (randomMoney > 0) {
 							cout << " sixty 1 dollar bills.\n";
 							burnTime = 60;
 						}
@@ -188,19 +198,19 @@ int main() {
 					}
 					else {
 						cout << "You've already examined this coat, you had found";
-						if (burnTime == 2) {
+						if (randomMoney > 95) {
 							cout << " two 100 dollar bills.\n";
 						}
-						else if (burnTime == 4) {
+						else if (randomMoney > 85) {
 							cout << " four 50 dollar bills.\n";
 						}
-						else if (burnTime == 10) {
+						else if (randomMoney > 70) {
 							cout << " ten 10 dollar bills.\n";
 						}
-						else if (burnTime == 30) {
+						else if (randomMoney > 40) {
 							cout << " thirty 10 dollar bills.\n";
 						}
-						else if (burnTime == 60) {
+						else if (randomMoney > 0) {
 							cout << " sixty 1 dollar bills.\n";
 						}
 					}
@@ -304,7 +314,7 @@ int main() {
 					system("cls");
 					topBar();
 					cout << "You couldn't find anthing in the couch. With how torn it is,\n";
-					system("timeout /t 1 >nul");
+					system("timeout /t 2 >nul");
 					cout << "perhaps it was searched already. Not by anything human though.\n";
 					system("PAUSE>nul");
 				}
@@ -446,6 +456,16 @@ int main() {
 					health -= 1;
 					system("PAUSE>nul");
 				}
+				else if (input.compare("check keyboard") == 0 || input.compare("examine keyboard") == 0 || input.compare("keyboard") == 0 || input.compare("ke") == 0 || input.compare("inspect keyboard") == 0 || input.compare("key board") == 0) {
+					system("cls");
+					topBar();
+					cout << "You attempt to check out the keyboard.\n";
+					PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
+					system("timeout /t 1 >nul");
+					cout << "Ouch! The sharp plastic edges cut you! Maybe don't do that again.\n";
+					health -= 1;
+					system("PAUSE>nul");
+				}
 				else {
 					thingsInAllRooms(input);
 				}
@@ -484,6 +504,8 @@ int main() {
 					cout << "You open the pantry.\n";
 					system("timeout /t 3 >nul");
 					cout << "A horrid putrid stench assaults your nostrils.\n";
+					PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
+					health -= 1;
 					system("timeout /t 3 >nul");
 					cout << "The pantry is full of rotten food, that has\n";
 					system("timeout /t 3 >nul");
@@ -513,8 +535,19 @@ int main() {
 					}
 					system("PAUSE>nul");
 				}
-				else if (input.compare("hallway") == 0 || input.compare("hall") == 0 || input.compare("enter the hall") == 0 || input.compare("h") == 0) {
-					room = 8;
+				else if (input.compare("pots") == 0 || input.compare("pans") == 0 || input.compare("pots and pans") == 0 || input.compare("pot") == 0) {
+					system("cls");
+					topBar();
+					cout << "You reach up to check out the pots and pans.\n";
+					system("timeout /t 3 >nul");
+					cout << "You notice they are completely rusted,\n";
+					system("timeout /t 3 >nul");
+					cout << "and as you touch one, its handle snaps off,\n";
+					system("timeout /t 3 >nul");
+					cout << "and hits you right on the head.\n";
+					PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
+					health -= 5;
+					system("PAUSE>nul");
 				}
 				else {
 					thingsInAllRooms(input);
@@ -522,16 +555,115 @@ int main() {
 				system("cls");
 				break;
 			case 8: //hallway 2
-
+				if (haveIBeenHere[7] == 0) {
+					if (amIStillHere[7] == 0) {
+						cout << "You walk into the hallway.\n";
+						system("timeout /t 3 >nul");
+						cout << "In front of you is an open door \n";
+						system("timeout /t 3 >nul");
+						cout << "leading to the basement,\n";
+						system("timeout /t 3 >nul");
+						cout << "and to your left is another open door,\n";
+						system("timeout /t 3 >nul");
+						cout << "leading to a filthy bathroom.\n";
+						amIStillHere[7] = 1;
+					}
+					else {
+						cout << "You walk into the hallway.\n";
+						cout << "In front of you is an open door\n";
+						cout << "leading to the basement,\n";
+						cout << "and to your left is another open door,\n";
+						cout << "leading to a filthy bathroom.\n";
+					}
+				}
+				else {
+					cout << "You walk into the hallway.\n";
+					cout << "In front of you is an open door\n";
+					cout << "leading to the basement,\n";
+					cout << "and to your left is another open door,\n";
+					cout << "leading to a filthy bathroom.\n";
+				}
+				if (input.compare("bathroom") == 0 || input.compare("bath") == 0 || input.compare("enter the bathroom") == 0 || input.compare("b") == 0) {
+				room = 11;
+				haveIBeenHere[7] = 1;
+				}
+				else if (input.compare("back") == 0 || input.compare("go back") == 0 || input.compare("walk back") == 0 || input.compare("living room") == 0 || input.compare("livingroom") == 0) {
+				room = 5;
+				haveIBeenHere[7] = 1;
+				}
+				else if (input.compare("basement") == 0 || input.compare("stairs") == 0 || input.compare("go downstairs") == 0 || input.compare("go down stairs") == 0 || input.compare("s") == 0) {
+					room = 10;
+					haveIBeenHere[7] = 1;
+				}
+				else {
+					thingsInAllRooms(input);
+				}
+				system("cls");
 				break;
 			case 9: //stairs
 				floor = 2;
+				room = 1;
 				break;
-			case 10: 
-
+			case 10: //basement
+				cout << "This is where you would enter the basement,\n";
+				system("timeout /t 3 >nul");
+				cout << "but this is early access, so, you can't.\n";
+				system("timeout /t 3 >nul");
+				cout << "Plans for the basement includes crafting,\n";
+				system("timeout /t 3 >nul");
+				cout << "however plans for this game do not include updating it.\n";
+				thingsInAllRooms(input);
+				system("cls");
 				break;
-			case 11:
-
+			case 11: // bathroom
+				if (haveIBeenHere[10] == 0) {
+					if (amIStillHere[10] == 0) {
+						cout << "You walk into the bathroom.\n";
+						system("timeout /t 3 >nul");
+						cout << "It's disgusting. The walls are stained black,\n";
+						system("timeout /t 3 >nul");
+						cout << "and the toilet is cracked in half.\n";
+						system("timeout /t 3 >nul");
+						cout << "In the sink is something that smells terrible,\n";
+						system("timeout /t 3 >nul");
+						cout << "and you hope it's not something dead.\n";
+						amIStillHere[10] = 1;
+					}
+					else {
+						cout << "You walk into the bathroom.\n";
+						cout << "It's disgusting. The walls are stained black,\n";
+						cout << "and the toilet is cracked in half.\n";
+						cout << "In the sink is something that smells terrible,\n";
+						cout << "and you hope it's not something dead.\n";
+					}
+				}
+				else {
+					cout << "You walk into the bathroom.\n";
+					cout << "It's disgusting. The walls are stained black,\n";
+					cout << "and the toilet is cracked in half.\n";
+					cout << "In the sink is something that smells terrible,\n";
+					cout << "and you hope it's not something dead.\n";
+				}
+				if (input.compare("dead") == 0 || input.compare("sink") == 0 || input.compare("examine sink") == 0 || input.compare("s") == 0) {
+					system("cls");
+					topBar();
+					cout << "You reach into the sink, holding your breath.\n";
+					system("timeout /t 3 >nul");
+					cout << "You touch the smelly thing, and much to your dismay,\n";
+					system("timeout /t 3 >nul");
+					cout << "it is in fact something dead.\n";
+					system("timeout /t 3 >nul");
+					cout << "You recoil, deciding you want nothing to do with it.\n";
+					system("PAUSE>nul");
+				}
+				else if (input.compare("back") == 0 || input.compare("go back") == 0 || input.compare("walk back") == 0 || input.compare("hall") == 0 || input.compare("hallway") == 0) {
+					room = 8;
+					haveIBeenHere[10] = 1;
+				}
+				else {
+					thingsInAllRooms(input);
+				}
+				system("cls");
 				break;
 			}
 		}
@@ -540,34 +672,54 @@ int main() {
 			default:
 				cout << "I seem to have messed up, you're not in a room.\n";
 			case 1:
+				topBar();
+				cout << "Congratulations! You made it upstairs!\n";
+				system("timeout /t 3 >nul");
+				cout << "This is an area that doesn't exist yet either,\n";
+				system("timeout /t 3 >nul");
+				cout << "so you'll just be teleported to the boss fight.\n";
+				system("timeout /t 3 >nul");
+				cout << "Good Luck!\n";
+				room = 8;
+				system("PAUSE>nul");
+				system("cls");
+				break;
+			case 2: // hallway
 
 				break;
-			case 2:
+			case 3: // bedroom
 
 				break;
-			case 3:
+			case 4: // hallway
 
 				break;
-			case 4:
+			case 5: //bedroom
 
 				break;
-			case 5:
+			case 6: //bathroom
 
 				break;
-			case 6:
+			case 7: //bedroom
 
 				break;
-			case 7:
-
-				break;
-			case 8:
-
-				break;
-			case 9:
-
-				break;
-			case 10:
-
+			case 8: //boss room
+				cout << "You appear before a closet door.\n";
+				system("timeout /t 3 >nul");
+				cout << "You open it";
+				system("timeout /t 1 >nul");
+				cout << ".";
+				system("timeout /t 1 >nul");
+				cout << ".";
+				system("timeout /t 1 >nul");
+				cout << ".\n";
+				system("timeout /t 3 >nul");
+				cout << "Suddenly something that looks very much like you\n";
+				cout << "jumps out of the shadows, slashing at your face with its fingers.\n";
+				system("timeout /t 3 >nul");
+				cout << "You stumble back, barely avoiding it.\n";
+				system("PAUSE>nul");
+				system("cls");
+				didIWin = bossFight();
 				break;
 			}
 		}
@@ -595,18 +747,23 @@ int main() {
 			case 7:
 
 				break;
-			case 8:
-
-				break;
-			case 9:
-
-				break;
-			case 10:
-
-				break;
-				break;
 			}
 		}
+	}
+	if (didIWin == 1) {
+		system("cls");
+		cout << "You Win!\nVery impressive.\n";
+		system("PAUSE>nul");
+	}
+	else if (didIWin == 0 && input == "q") {
+		system("cls");
+		cout << "Game Over!\nYou quit! You'll have to start over.\n";
+		system("PAUSE>nul");
+	}
+	else if (didIWin == 0 && health <= 0) {
+		system("cls");
+		cout << "Game Over!\nYou died! Will you try again?\n";
+		system("PAUSE>nul");
 	}
 }
 
@@ -630,10 +787,24 @@ void thingsInAllRooms(string input) {
 		cout << "Available commands: Help, Inventory \n";
 		system("PAUSE>nul");
 	}
-	else if ((input.compare("light money") == 0 || input.compare("use lighter on money") == 0 || input.compare("ignite money") == 0 || input.compare("burn money") == 0 || input.compare("use lighter") == 0) && inventory[LIGHTER] == "Lighter" && inventory[MONEY] == "Money") {
-		system("cls");
-		topBar();
-		inventory[MONEY] = "Burning Money";
+	else if (input.compare("light money") == 0 || input.compare("use lighter on money") == 0 || input.compare("ignite money") == 0 || input.compare("burn money") == 0 || input.compare("use lighter") == 0) {
+		if (inventory[LIGHTER] == "Lighter" && inventory[MONEY] == "Money") {
+			system("cls");
+			topBar();
+			cout << "You set the money you found on fire.\n";
+			system("timeout /t 3 >nul");
+			cout << "The more paper you have, the longer the fire will last.\n";
+			inventory[MONEY] = "Burning Money";
+			burning = 1;
+		}
+		else if (inventory[MONEY] == "Burning Money") {
+			system("cls");
+			topBar();
+			cout << "You've already lit your money on fire.\n";
+		}
+		else {
+			cout << "Good idea, but how will you burn it?\n";
+		}
 		system("PAUSE>nul");
 	}
 	else if (input.compare("win") == 0) {
@@ -652,17 +823,78 @@ void thingsInAllRooms(string input) {
 	}
 }
 
-bool bossFight(string input) {
-	int random = betterRand();
-	if (inventory[POCKET] == "Pocket Knife") {
-		if (random <= 10) {
-
+bool bossFight() {
+	string input;
+	int bossHealth = 100;
+	int bossLeftA = 3;
+	int bossLeftL = 3;
+	int bossRightA = 3;
+	int bossRightL = 3;
+	system("cls");
+	topBar();
+	int random;
+	cout << "The fight begins.\n";
+	system("timeout /t 3 >nul");
+	cout << "The other you follows up his attack,\n";
+	system("timeout /t 3 >nul");
+	cout << "lunging for your throat.\n";
+	system("timeout /t 3 >nul");
+	cout << "What will you do?\n";
+	getline(cin, input);
+	transform(input.begin(), input.end(), input.begin(), ::tolower);
+	if (input.compare("dodge") == 0) {
+		random = betterRand();
+		system("cls");
+		topBar();
+		if (random > 10) {
+			cout << "You barely dodge, the creatures blackened fingers miss your neck.\n";
 		}
 		else {
-
+			cout << "You aren't quite fast enough.\n";
+			cout << "The creatures balckened fingers scratch your neck.\n";
+			PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
+			health -= 5;
 		}
+		system("PAUSE>nul");
+		system("cls");
 	}
-	else if (inventory[KITCHEN] == "Kitchen Knife") {
+	else if (input.compare("block") == 0) {
+		random = betterRand();
+		system("cls");
+		topBar();
+		if (random > 20) {
+			cout << "You block the hit.\n";
+			cout << "The creatures balckened hand strikes your arm.\n";
+		}
+		else {
+			cout << "You aren't quite fast enough.\n";
+			cout << "The creatures balckened fingers scratch your neck.\n";
+			PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
+			health -= 5;
+		}
+		system("PAUSE>nul");
+		system("cls");
+	}
+	else if (input.compare("attack") == 0) {
+		random = betterRand();
+		system("cls");
+		topBar();
+		if (random > 50) {
+			cout << "You swing at the creatures arm.\n";
+			system("timeout /t 3 >nul");
+			cout << "A hit! The creature takes a step back, astonsihed.\n";
+		}
+		else {
+			cout << "You aren't quite fast enough.\n";
+			cout << "The creatures balckened fingers scratch your neck.\n";
+			PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
+			health -= 5;
+		}
+		system("PAUSE>nul");
+		system("cls");
+	}
+
+	if (inventory[KITCHEN] == "Kitchen Knife") {
 		if (random <= 50) {
 
 		}
