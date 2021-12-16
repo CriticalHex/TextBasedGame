@@ -11,15 +11,15 @@ using namespace std;
 /*
 I need:
 10 rooms: check								:)	
-A way to win and lose: not yet				:(
-Vividly written description: Yes so far		:)...
+A way to win and lose: not yet				:)
+Vividly written description: Yes so far		:)
 Strings for input: Yes						:)
 Inventory of at least 5 items: yes			:)
 Inventory in a string array: Yes			:)
-Two non trivial functions: 0 so far			:(
+Two non trivial functions: 0 so far			:)
 Comments: Not nearly enough					:(
-sounds and colors: not yet					:(
-ASCII art: Oh god, no.						:(
+sounds and colors: not yet					:)
+ASCII art: Oh god, no.						:)
 A well draw paper map: Well drawn? well...	:(...
 Back story: Not yet							:(
 2-3 Concept art: Not yet					:(
@@ -614,7 +614,8 @@ int main() {
 				cout << "Plans for the basement includes crafting,\n";
 				system("timeout /t 3 >nul");
 				cout << "however plans for this game do not include updating it.\n";
-				thingsInAllRooms(input);
+				room = 8;
+				system("PAUSE");
 				system("cls");
 				break;
 			case 11: // bathroom
@@ -646,6 +647,8 @@ int main() {
 					cout << "In the sink is something that smells terrible,\n";
 					cout << "and you hope it's not something dead.\n";
 				}
+				getline(cin, input);
+				transform(input.begin(), input.end(), input.begin(), ::tolower);
 				if (input.compare("dead") == 0 || input.compare("sink") == 0 || input.compare("examine sink") == 0 || input.compare("s") == 0) {
 					system("cls");
 					topBar();
@@ -658,7 +661,7 @@ int main() {
 					cout << "You recoil, deciding you want nothing to do with it.\n";
 					system("PAUSE>nul");
 				}
-				else if (input.compare("back") == 0 || input.compare("go back") == 0 || input.compare("walk back") == 0 || input.compare("hall") == 0 || input.compare("hallway") == 0) {
+				else if (input.compare("back") == 0 || input.compare("go back") == 0 || input.compare("walk back") == 0 || input.compare("hall") == 0 || input.compare("hallway") == 0 || input.compare("b") == 0) {
 					room = 8;
 					haveIBeenHere[10] = 1;
 				}
@@ -838,7 +841,7 @@ bool bossFight() {
 	int bossHead = 3;
 	bool weaponOut = 0;
 	int random;
-	while (inBattle == 0) {
+	while (inBattle == 0 && health > 0 && bossHealth > 0 && bossHead > 0) {
 	system("cls");
 	topBar();
 		switch (stage) {
@@ -892,6 +895,7 @@ bool bossFight() {
 						system("timeout /t 3 >nul");
 						cout << "A hit! The creature takes a step back, astonsihed.\n";
 						bossLeftA -= 1;
+						bossHealth -= 5;
 					}
 					else {
 						cout << "You swing at the creatures arm.\n";
@@ -904,40 +908,45 @@ bool bossFight() {
 					}
 					stage = 2;
 				}
-				else if (input.compare("slash") == 0 || input.compare("stab") == 0) {
-					random = betterRand();
-					system("cls");
-					topBar();
-					if (random > 90) {
-						cout << "You attempt to draw your weapon and attack.\n";
-						system("timeout /t 3 >nul");
-						cout << "Somehow you're fast enough, cleaving into the creatures arm.\n";
-						system("timeout /t 3 >nul");
-						cout << "The creature recoils, stunned, as its arm leaks black blood.\n";
-						bossHealth -= 10;
-						bossLeftA -= 2;
+				if (inventory[KITCHEN] == "Kitchen Knife") {
+					if (input.compare("slash") == 0 || input.compare("stab") == 0) {
+						random = betterRand();
+						system("cls");
+						topBar();
+						if (random > 90) {
+							cout << "You attempt to draw your weapon and attack.\n";
+							system("timeout /t 3 >nul");
+							cout << "Somehow you're fast enough, cleaving into the creatures arm.\n";
+							system("timeout /t 3 >nul");
+							cout << "The creature recoils, stunned, as its arm leaks black blood.\n";
+							bossHealth -= 10;
+							bossLeftA -= 2;
+						}
+						else {
+							cout << "You aren't quite fast enough.\n";
+							system("timeout /t 3 >nul");
+							cout << "You get your weapon out, but the creatures attack connects.\n";
+							system("timeout /t 3 >nul");
+							cout << "The creatures balckened fingers scratch your neck.\n";
+							PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
+							health -= 5;
+						}
+						stage = 2;
+						weaponOut = 1;
 					}
-					else {
-						cout << "You aren't quite fast enough.\n";
-						system("timeout /t 3 >nul");
-						cout << "You get your weapon out, but the creatures attack connects.\n";
-						system("timeout /t 3 >nul");
+					else if (input.compare("knife") == 0 || input.compare("weapon") == 0 || input.compare("draw weapon") == 0 || input.compare("draw knife") == 0) {
+						system("cls");
+						topBar();
+						cout << "You get your weapon out as the creature connects.\n";
 						cout << "The creatures balckened fingers scratch your neck.\n";
 						PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
 						health -= 5;
+						stage = 2;
+						weaponOut = 1;
 					}
-					stage = 2;
-					weaponOut = 1;
-				}
-				else if (input.compare("knife") == 0 || input.compare("weapon") == 0 || input.compare("draw weapon") == 0 || input.compare("draw knife") == 0) {
-					system("cls");
-					topBar();
-					cout << "You get your weapon out as the creature connects.\n";
-					cout << "The creatures balckened fingers scratch your neck.\n";
-					PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
-					health -= 5;
-					stage = 2;
-					weaponOut = 1;
+					else {
+						thingsInAllRooms(input);
+					}
 				}
 				else {
 					thingsInAllRooms(input);
@@ -963,15 +972,14 @@ bool bossFight() {
 							system("timeout /t 3 >nul");
 							cout << "The creature stumbles, then readies itself to attack.\n";
 							bossHead -= 1;
+							bossHealth -= 15;
 						}
 						else {
-							cout << "You swing at the creatures head.\n";
+							cout << "You swing at the creatures head,\n";
 							system("timeout /t 3 >nul");
-							cout << "The creature dips, dodging your attack.\n";
+							cout << "but the creature dips, dodging your attack,\n";
 							system("timeout /t 3 >nul");
-							cout << "It's blackened fingers scratch your neck.\n";
-							PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
-							health -= 5;
+							cout << "and readying its next swing.\n";
 						}
 						system("PAUSE>nul");
 						system("cls");
@@ -980,20 +988,21 @@ bool bossFight() {
 						random = betterRand();
 						system("cls");
 						topBar();
-						if (random > 50) {
+						if (random > 10) {
 							cout << "You swing at the creatures arm.\n";
 							system("timeout /t 3 >nul");
-							cout << "A hit! The creature takes a step back, astonsihed.\n";
-							bossLeftA -= 1;
+							cout << "The creature moves to block,\n";
+							system("timeout /t 3 >nul");
+							cout << "but since you were going to hit its arm anyway,\n";
+							system("timeout /t 3 >nul");
+							cout << "your attack connects.\n";
+							bossRightA -= 1;
+							bossHealth -= 5;
 						}
 						else {
-							cout << "You swing at the creatures arm.\n";
+							cout << "You swing at the creatures arm,\n";
 							system("timeout /t 3 >nul");
-							cout << "The creature alters its swing, dodging your attack.\n";
-							system("timeout /t 3 >nul");
-							cout << "It's blackened fingers scratch your neck.\n";
-							PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
-							health -= 5;
+							cout << "but the creature steps back, avoiding your attack.\n";
 						}
 						system("PAUSE>nul");
 						system("cls");
@@ -1002,20 +1011,17 @@ bool bossFight() {
 						random = betterRand();
 						system("cls");
 						topBar();
-						if (random > 50) {
-							cout << "You swing at the creatures arm.\n";
+						if (random > 30) {
+							cout << "You kick at the creatures leg.\n";
 							system("timeout /t 3 >nul");
-							cout << "A hit! The creature takes a step back, astonsihed.\n";
-							bossLeftA -= 1;
+							cout << "You connect! The creature staggers, then regains its footing.\n";
+							bossLeftL -= 1;
+							bossHealth -= 5;
 						}
 						else {
-							cout << "You swing at the creatures arm.\n";
+							cout << "You kick at the creatures leg,\n";
 							system("timeout /t 3 >nul");
-							cout << "The creature alters its swing, dodging your attack.\n";
-							system("timeout /t 3 >nul");
-							cout << "It's blackened fingers scratch your neck.\n";
-							PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
-							health -= 5;
+							cout << "but the creature steps back, avoiding your attack.\n";
 						}
 						system("PAUSE>nul");
 						system("cls");
@@ -1024,20 +1030,16 @@ bool bossFight() {
 						random = betterRand();
 						system("cls");
 						topBar();
-						if (random > 50) {
-							cout << "You swing at the creatures arm.\n";
+						if (random > 60) {
+							cout << "You strike at the creatures stomach.\n";
 							system("timeout /t 3 >nul");
-							cout << "A hit! The creature takes a step back, astonsihed.\n";
-							bossLeftA -= 1;
+							cout << "A hit! The creature doubles over in pain.\n";
+							bossHealth -= 15;
 						}
 						else {
-							cout << "You swing at the creatures arm.\n";
+							cout << "You strike at the creatures stomach,\n";
 							system("timeout /t 3 >nul");
-							cout << "The creature alters its swing, dodging your attack.\n";
-							system("timeout /t 3 >nul");
-							cout << "It's blackened fingers scratch your neck.\n";
-							PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
-							health -= 5;
+							cout << "but the creature steps back, avoiding your attack.\n";
 						}
 						system("PAUSE>nul");
 						system("cls");
@@ -1046,20 +1048,152 @@ bool bossFight() {
 						random = betterRand();
 						system("cls");
 						topBar();
-						if (random > 50) {
-							cout << "You swing at the creatures arm.\n";
+						if (random > 60) {
+							cout << "You strike at the creatures chest.\n";
 							system("timeout /t 3 >nul");
-							cout << "A hit! The creature takes a step back, astonsihed.\n";
-							bossLeftA -= 1;
+							cout << "Your fist connects, knocking the breath out of the creature.\n";
+							bossHealth -= 10;
 						}
 						else {
-							cout << "You swing at the creatures arm.\n";
+							cout << "You strike at the creatures chest,\n";
 							system("timeout /t 3 >nul");
-							cout << "The creature alters its swing, dodging your attack.\n";
+							cout << "but the creature steps back, dodging your attack.\n";
+						}
+						system("PAUSE>nul");
+						system("cls");
+					}
+					else if (input.compare("attack groin") == 0 || input.compare("attack crotch") == 0 || input.compare("attack balls") == 0) {
+					random = betterRand();
+					system("cls");
+					topBar();
+					if (random > 50) {
+						cout << "You kick with all your might at the creatures balls.\n";
+						system("timeout /t 3 >nul");
+						cout << "A critical hit! The creature straight up dies.\n";
+						system("timeout /t 3 >nul");
+						cout << "Really had to do it to 'em huh?\n";
+						bossHealth -= 100;
+					}
+					else {
+						cout << "You kick with all your might at the creatures balls.\n";
+						system("timeout /t 3 >nul");
+						cout << "The creature blocks, and in anger,\n";
+						system("timeout /t 3 >nul");
+						cout << "punches your chest so hard your ribs cage in,\n";
+						system("timeout /t 3 >nul");
+						cout << "killing you instantly. Don't kick monsters in the balls I guess.\n";
+						PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
+						health -= 100;
+					}
+					system("PAUSE>nul");
+					system("cls");
+					}
+					else {
+						thingsInAllRooms(input);
+					}
+				}
+				else {
+					if(input.compare("attack head") == 0) {
+						random = betterRand();
+						system("cls");
+						topBar();
+						if (random > 70) {
+							cout << "You slash at the creatures head.\n";
 							system("timeout /t 3 >nul");
-							cout << "It's blackened fingers scratch your neck.\n";
-							PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
-							health -= 5;
+							cout << "The creature tries to dodge but fails,\n";
+							system("timeout /t 3 >nul");
+							cout << "and your blade gouges with its face.\n";
+							system("timeout /t 3 >nul");
+							cout << "The creature stumbles, then readies itself to attack.\n";
+							bossHead -= 2;
+							bossHealth -= 30;
+						}
+						else {
+							cout << "You swing at the creatures head,\n";
+							system("timeout /t 3 >nul");
+							cout << "but the creature dips, dodging your attack,\n";
+							system("timeout /t 3 >nul");
+							cout << "and readying its next swing.\n";
+						}
+						system("PAUSE>nul");
+						system("cls");
+					}
+					else if (input.compare("attack arm") == 0) {
+						random = betterRand();
+						system("cls");
+						topBar();
+						if (random > 70) {
+							cout << "You slash at the creatures arm.\n";
+							system("timeout /t 3 >nul");
+							cout << "The creature moves to block,\n";
+							system("timeout /t 3 >nul");
+							cout << "but since you were going to hit its arm anyway,\n";
+							system("timeout /t 3 >nul");
+							cout << "your attack connects.\n";
+							bossRightA -= 2;
+							bossHealth -= 15;
+						}
+						else {
+							cout << "You slash at the creatures arm,\n";
+							system("timeout /t 3 >nul");
+							cout << "but the creature steps back, avoiding your attack.\n";
+						}
+						system("PAUSE>nul");
+						system("cls");
+					}
+					else if (input.compare("attack leg") == 0) {
+						random = betterRand();
+						system("cls");
+						topBar();
+						if (random > 30) {
+							cout << "You kick at the creatures leg.\n";
+							system("timeout /t 3 >nul");
+							cout << "You connect! The creature staggers, then regains its footing.\n";
+							bossLeftL -= 1;
+							bossHealth -= 5;
+						}
+						else {
+							cout << "You kick at the creatures leg,\n";
+							system("timeout /t 3 >nul");
+							cout << "but the creature steps back, avoiding your attack.\n";
+						}
+						system("PAUSE>nul");
+						system("cls");
+					}
+					else if (input.compare("attack stomach") == 0 || input.compare("attack torso") == 0) {
+						random = betterRand();
+						system("cls");
+						topBar();
+						if (random > 70) {
+							cout << "You thrust at the creatures stomach.\n";
+							system("timeout /t 3 >nul");
+							cout << "Your blade pierces, the creature doubles over in pain.\n";	
+							bossHealth -= 25;
+						}
+						else {
+							cout << "You thrust at the creatures stomach,\n";
+							system("timeout /t 3 >nul");
+							cout << "but the creature steps back, barely avoiding your attack.\n";
+						}
+						system("PAUSE>nul");
+						system("cls");
+					}
+					else if (input.compare("attack chest") == 0) {
+						random = betterRand();
+						system("cls");
+						topBar();
+						if (random > 75) {
+							cout << "You stab at the creatures chest.\n";
+							system("timeout /t 3 >nul");
+							cout << "Your blade connects, piercing the creatures heart,\n";
+							system("timeout /t 3 >nul");
+							cout << "it will die very soon.\n";
+							bossHealth -= 95;
+						}
+						else {
+							cout << "You strike at the creatures chest,\n";
+							system("timeout /t 3 >nul");
+							cout << "but the creature steps back, dodging your attack.\n";
 						}
 						system("PAUSE>nul");
 						system("cls");
@@ -1069,19 +1203,23 @@ bool bossFight() {
 						system("cls");
 						topBar();
 						if (random > 50) {
-							cout << "You swing at the creatures arm.\n";
+							cout << "You kick with all your might at the creatures balls.\n";
 							system("timeout /t 3 >nul");
-							cout << "A hit! The creature takes a step back, astonsihed.\n";
-							bossLeftA -= 1;
+							cout << "A critical hit! The creature straight up dies.\n";
+							system("timeout /t 3 >nul");
+							cout << "Really had to do it to 'em huh?\n";
+							bossHealth -= 100;
 						}
 						else {
-							cout << "You swing at the creatures arm.\n";
+							cout << "You kick with all your might at the creatures balls,\n";
 							system("timeout /t 3 >nul");
-							cout << "The creature alters its swing, dodging your attack.\n";
+							cout << "but the creature blocks, and in anger,\n";
 							system("timeout /t 3 >nul");
-							cout << "It's blackened fingers scratch your neck.\n";
+							cout << "punches your chest so hard your ribs cage in,\n";
+							system("timeout /t 3 >nul");
+							cout << "killing you instantly. Don't kick monsters in the balls I guess.\n";
 							PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
-							health -= 5;
+							health -= 100;
 						}
 						system("PAUSE>nul");
 						system("cls");
@@ -1090,142 +1228,209 @@ bool bossFight() {
 						thingsInAllRooms(input);
 					}
 				}
-				else {
-					if (input.compare("attack head") == 0) {
-						random = betterRand();
-						system("cls");
-						topBar();
-						if (random > 50) {
-							cout << "You swing at the creatures arm.\n";
-							system("timeout /t 3 >nul");
-							cout << "A hit! The creature takes a step back, astonsihed.\n";
-							bossLeftA -= 1;
-						}
-						else {
-							cout << "You swing at the creatures arm.\n";
-							system("timeout /t 3 >nul");
-							cout << "The creature alters its swing, dodging your attack.\n";
-							system("timeout /t 3 >nul");
-							cout << "It's blackened fingers scratch your neck.\n";
-							PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
-							health -= 5;
-						}
-						system("PAUSE>nul");
-						system("cls");
+				system("PAUSE>nul");
+				system("cls");
+				break;
+			case 3:
+				cout << "The creature steps forward to attack again,\n";
+				system("timeout /t 3 >nul");
+				cout << "and pulls its arm back for a hard punch.\n";
+				system("timeout /t 3 >nul");
+				cout << "It lunges.\n";
+				system("timeout /t 3 >nul");
+				cout << "What will you do?\n";
+				getline(cin, input);
+				transform(input.begin(), input.end(), input.begin(), ::tolower);
+				if (input.compare("dodge") == 0) {
+					random = betterRand();
+					system("cls");
+					topBar();
+					if (random > 30) {
+						cout << "You barely dodge, the creatures arm extends past you.\n";
 					}
-					else if (input.compare("attack arm") == 0) {
-						random = betterRand();
-						system("cls");
-						topBar();
-						if (random > 50) {
-							cout << "You swing at the creatures arm.\n";
-							system("timeout /t 3 >nul");
-							cout << "A hit! The creature takes a step back, astonsihed.\n";
-							bossLeftA -= 1;
-						}
-						else {
-							cout << "You swing at the creatures arm.\n";
-							system("timeout /t 3 >nul");
-							cout << "The creature alters its swing, dodging your attack.\n";
-							system("timeout /t 3 >nul");
-							cout << "It's blackened fingers scratch your neck.\n";
-							PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
-							health -= 5;
-						}
-						system("PAUSE>nul");
-						system("cls");
+					else {
+						cout << "You aren't quite fast enough.\n";
+						system("timeout /t 3 >nul");
+						cout << "The creatures fist connects with your chest,\n";
+						system("timeout /t 3 >nul");
+						cout << "cracking a rib.\n";
+						PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
+						health -= 15;
 					}
-					else if (input.compare("attack leg") == 0) {
-						random = betterRand();
-						system("cls");
-						topBar();
-						if (random > 50) {
-							cout << "You swing at the creatures arm.\n";
-							system("timeout /t 3 >nul");
-							cout << "A hit! The creature takes a step back, astonsihed.\n";
-							bossLeftA -= 1;
-						}
-						else {
-							cout << "You swing at the creatures arm.\n";
-							system("timeout /t 3 >nul");
-							cout << "The creature alters its swing, dodging your attack.\n";
-							system("timeout /t 3 >nul");
-							cout << "It's blackened fingers scratch your neck.\n";
-							PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
-							health -= 5;
-						}
-						system("PAUSE>nul");
-						system("cls");
+					stage = 4;
+				}
+				else if (input.compare("block") == 0) {
+					random = betterRand();
+					system("cls");
+					topBar();
+					if (random > 20) {
+						cout << "You block the hit.\n";
+						cout << "The creatures fist strikes your arm.\n";
+						PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
+						health -= 5;
 					}
-					else if (input.compare("attack stomach") == 0 || input.compare("attack torso") == 0) {
-						random = betterRand();
-						system("cls");
-						topBar();
-						if (random > 50) {
-							cout << "You swing at the creatures arm.\n";
-							system("timeout /t 3 >nul");
-							cout << "A hit! The creature takes a step back, astonsihed.\n";
-							bossLeftA -= 1;
-						}
-						else {
-							cout << "You swing at the creatures arm.\n";
-							system("timeout /t 3 >nul");
-							cout << "The creature alters its swing, dodging your attack.\n";
-							system("timeout /t 3 >nul");
-							cout << "It's blackened fingers scratch your neck.\n";
-							PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
-							health -= 5;
-						}
-						system("PAUSE>nul");
-						system("cls");
+					else {
+						cout << "You aren't quite fast enough.\n";
+						system("timeout /t 3 >nul");
+						cout << "The creatures fist connects with your chest,\n";
+						system("timeout /t 3 >nul");
+						cout << "cracking a rib.\n";
+						PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
+						health -= 15;
 					}
-					else if (input.compare("attack chest") == 0) {
+					stage = 4;
+				}
+				if (weaponOut == 0) {
+					if (input.compare("slash") == 0 || input.compare("stab") == 0) {
 						random = betterRand();
 						system("cls");
 						topBar();
-						if (random > 50) {
-							cout << "You swing at the creatures arm.\n";
+						if (random > 90) {
+							cout << "You attempt to draw your weapon and attack.\n";
 							system("timeout /t 3 >nul");
-							cout << "A hit! The creature takes a step back, astonsihed.\n";
-							bossLeftA -= 1;
+							cout << "Somehow you're fast enough, cleaving into the creatures shoulder.\n";
+							system("timeout /t 3 >nul");
+							cout << "The creature falls, then quickly gets back up.\n";
+							bossHealth -= 15;
+							bossRightA -= 2;
+							system("timeout /t 3 >nul");
+							if (bossRightA > 0) {
+								cout << "The creatures arm seems ready to fall off.\n";
+							}
+							else {
+								cout << "The creatures arm falls off as it stands.\n";
+							}
 						}
 						else {
-							cout << "You swing at the creatures arm.\n";
+							cout << "You aren't quite fast enough.\n";
 							system("timeout /t 3 >nul");
-							cout << "The creature alters its swing, dodging your attack.\n";
+							cout << "You get your weapon out, but the creatures fist connects with your chest,\n";
 							system("timeout /t 3 >nul");
-							cout << "It's blackened fingers scratch your neck.\n";
+							cout << "cracking a rib.\n";
 							PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
-							health -= 5;
+							health -= 15;
 						}
-						system("PAUSE>nul");
-						system("cls");
+						stage = 4;
+						weaponOut = 1;
 					}
-					else if (input.compare("attack groin") == 0 || input.compare("attack crotch") == 0 || input.compare("attack balls") == 0) {
-						random = betterRand();
+					else if (input.compare("knife") == 0 || input.compare("weapon") == 0 || input.compare("draw weapon") == 0 || input.compare("draw knife") == 0) {
 						system("cls");
 						topBar();
-						if (random > 50) {
-							cout << "You swing at the creatures arm.\n";
-							system("timeout /t 3 >nul");
-							cout << "A hit! The creature takes a step back, astonsihed.\n";
-							bossLeftA -= 1;
-						}
-						else {
-							cout << "You swing at the creatures arm.\n";
-							system("timeout /t 3 >nul");
-							cout << "The creature alters its swing, dodging your attack.\n";
-							system("timeout /t 3 >nul");
-							cout << "It's blackened fingers scratch your neck.\n";
-							PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
-							health -= 5;
-						}
-						system("PAUSE>nul");
-						system("cls");
+						cout << "You get your weapon out as the creature connects.\n";
+						system("timeout /t 3 >nul");
+						cout << "Its attack hits your chest,\n";
+						system("timeout /t 3 >nul");
+						cout << "cracking a rib.\n";
+						PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
+						health -= 15;
+						stage = 4;
+						weaponOut = 1;
 					}
 					else {
 						thingsInAllRooms(input);
 					}
+				}
+				else {
+					if (input.compare("slash") == 0 || input.compare("stab") == 0) {
+						random = betterRand();
+						system("cls");
+						topBar();
+						if (random > 60) {
+							cout << "You attempt to slash at the creature.\n";
+							system("timeout /t 3 >nul");
+							cout << "Somehow you're fast enough, cleaving into the creatures shoulder.\n";
+							system("timeout /t 3 >nul");
+							cout << "The creature falls, then quickly gets back up.\n";
+							bossHealth -= 15;
+							bossRightA -= 2;
+							system("timeout /t 3 >nul");
+							if (bossRightA > 0) {
+								cout << "The creatures arm seems ready to fall off.\n";
+							}
+							else {
+								cout << "The creatures arm falls off as it stands.\n";
+							}
+						}
+						else {
+							cout << "You aren't quite fast enough.\n";
+							system("timeout /t 3 >nul");
+							cout << "The creatures fist connects with your chest,\n";
+							system("timeout /t 3 >nul");
+							cout << "cracking a rib.\n";
+							PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
+							health -= 15;
+						}
+						stage = 4;
+					}
+					else {
+						thingsInAllRooms(input);
+					}
+
+				}
+				if (input.compare("attack") == 0) {
+					random = betterRand();
+					system("cls");
+					topBar();
+					if (random > 50) {
+						cout << "You swing at the creatures arm.\n";
+						system("timeout /t 3 >nul");
+						cout << "A hit! The creature takes a step back, astonsihed.\n";
+						bossLeftA -= 1;
+						bossHealth -= 5;
+					}
+					else {
+						cout << "You swing at the creatures arm.\n";
+						system("timeout /t 3 >nul");
+						cout << "The creature alters its swing, dodging your attack.\n";
+						system("timeout /t 3 >nul");
+						cout << "It's blackened fingers scratch your neck.\n";
+						PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
+						health -= 5;
+					}
+					stage = 2;
+				}
+				if (inventory[KITCHEN] == "Kitchen Knife") {
+					if (input.compare("slash") == 0 || input.compare("stab") == 0) {
+						random = betterRand();
+						system("cls");
+						topBar();
+						if (random > 90) {
+							cout << "You attempt to draw your weapon and attack.\n";
+							system("timeout /t 3 >nul");
+							cout << "Somehow you're fast enough, cleaving into the creatures arm.\n";
+							system("timeout /t 3 >nul");
+							cout << "The creature recoils, stunned, as its arm leaks black blood.\n";
+							bossHealth -= 10;
+							bossLeftA -= 2;
+						}
+						else {
+							cout << "You aren't quite fast enough.\n";
+							system("timeout /t 3 >nul");
+							cout << "You get your weapon out, but the creatures attack connects.\n";
+							system("timeout /t 3 >nul");
+							cout << "The creatures balckened fingers scratch your neck.\n";
+							PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
+							health -= 5;
+						}
+						stage = 2;
+						weaponOut = 1;
+					}
+					else if (input.compare("knife") == 0 || input.compare("weapon") == 0 || input.compare("draw weapon") == 0 || input.compare("draw knife") == 0) {
+						system("cls");
+						topBar();
+						cout << "You get your weapon out as the creature connects.\n";
+						cout << "The creatures balckened fingers scratch your neck.\n";
+						PlaySoundA((LPCSTR)"hitsound.WAV", NULL, SND_FILENAME | SND_ASYNC);
+						health -= 5;
+						stage = 2;
+						weaponOut = 1;
+					}
+					else {
+						thingsInAllRooms(input);
+					}
+				}
+				else {
+					thingsInAllRooms(input);
 				}
 				system("PAUSE>nul");
 				system("cls");
